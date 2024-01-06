@@ -10,7 +10,7 @@ class Pacman {
         this.animationDefault = 4;
         this.currentAnimation = 4;
         this.currentDot = 0
-        this.isPower = 1;
+        this.isPower = 0;
         this.makeGhostFlash = 0;
         this.isPowerTimer = null;
         this.ghostFlashTimer = null;
