@@ -10,7 +10,7 @@ class Pacman {
         this.animationDefault = 4;
         this.currentAnimation = 4;
         this.currentDot = 0
-        this.isPower = 0;
+        this.isPower = 1;
         this.makeGhostFlash = 0;
         this.isPowerTimer = null;
         this.ghostFlashTimer = null;
@@ -75,10 +75,10 @@ class Pacman {
     }
 
     moveCharacter() {
-        if (this.getX() == -1 && this.getY() == 10){
+        if (this.getBlockX() == -1 && this.getBlockY() == 10){
             this.x = 20 * blockSize;
         }
-        if (this.getX() == 21 && this.getY() == 10){
+        if (this.getBlockX() == 21 && this.getBlockY() == 10){
             this.x = 0 * blockSize;
         }
         this.checkChangeDirection();
@@ -123,9 +123,9 @@ class Pacman {
 
     checkCollision() {
         if (tileMap.map[Math.floor(this.y / blockSize)][Math.floor(this.x / blockSize)] == 1 ||
-            tileMap.map[Math.floor(this.y / blockSize + 0.999)][Math.floor(this.x / blockSize)] == 1 ||
-            tileMap.map[Math.floor(this.y / blockSize)][Math.floor(this.x / blockSize + 0.999)] == 1 ||
-            tileMap.map[Math.floor(this.y / blockSize + 0.999)][Math.floor(this.x / blockSize + 0.999)]  == 1){
+            tileMap.map[Math.ceil(this.y / blockSize)][Math.floor(this.x / blockSize)] == 1 ||
+            tileMap.map[Math.floor(this.y / blockSize)][Math.ceil(this.x / blockSize)] == 1 ||
+            tileMap.map[Math.ceil(this.y / blockSize)][Math.ceil(this.x / blockSize)]  == 1){
                 return true;
         }
         else {
@@ -136,8 +136,10 @@ class Pacman {
     checkGhostCollision() {
         let flag = -1;
         for (let i = 1; i <= ghosts.length; i++){
-            if (ghosts[i - 1].getX() == this.getX() && ghosts[i - 1].getY() == this.getY()){
-                flag = i - 1;
+            if (!ghosts[i - 1].isDeath){
+                if (ghosts[i - 1].getBlockX() == this.getBlockX() && ghosts[i - 1].getBlockY() == this.getBlockY()){
+                    flag = i - 1;
+                }
             }
         }
         return flag;
@@ -171,14 +173,19 @@ class Pacman {
         }
     }
 
-    getX() {
+    getBlockX() {
         return Math.floor(this.x / blockSize);
     }
 
-    getY() {
+    getBlockY() {
         return Math.floor(this.y / blockSize);
     }
-
+    getBlockX2() {
+        return Math.floor((this.x + blockSize - 1) / blockSize);
+    }
+    getBlockY2() {
+        return Math.floor((this.y + blockSize - 1) / blockSize);
+    }
     // eatDot() {
     //     let row = this.y / blockSize;
     //     let column = this.x / blockSize;
@@ -221,7 +228,7 @@ class Pacman {
         }
     }
 
-    eatCharacter() {
+    eatCharacter() {                // eat Pacman or is eaten by pacman
         let flag = this.checkGhostCollision()
         if (flag != -1){
             if (this.isPower == 0){
@@ -234,7 +241,7 @@ class Pacman {
                 }
             }
             else {
-                ghosts.splice(flag, 1);
+                ghosts[flag].processWhenDeath();
             }
         }
     }

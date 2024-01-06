@@ -43,20 +43,25 @@ function restartGame() {
 function createGhost() {
     ghosts = [];
     for (let i = 1; i <= 4; i++){
-        let newGhost = new Ghost(9 * blockSize,10 * blockSize, blockSize, blockSize, 3, 0, i);
+        let newGhost = new Ghost(10 * blockSize,11 * blockSize, blockSize, blockSize, 3, 0, i);
         ghosts.push(newGhost);
     }
 }
 
+
 function drawGhosts() {
     for (let i = 0; i < ghosts.length; i++) {
-        ghosts[i].draw();
+        if (ghosts[i].isDeath == 0){
+            ghosts[i].draw();
+        }
     }
 };
 
 function updateGhosts() {
     for (let i = 0; i < ghosts.length; i++){
-        ghosts[i].update();
+        if (ghosts[i].isDeath == 0){
+            ghosts[i].update();
+        }
     }
 }
 
