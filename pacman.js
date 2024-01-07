@@ -9,7 +9,7 @@ class Pacman {
         this.nextDirection = 0;
         this.animationDefault = 4;
         this.currentAnimation = 4;
-        this.currentDot = 0
+        // this.currentDot = 0
         this.isPower = 0;
         this.makeGhostFlash = 0;
         this.isPowerTimer = null;
@@ -63,7 +63,7 @@ class Pacman {
             this.x + blockSize / 2,
             this.y + blockSize / 2
         );
-        canvasContext.rotate((this.direction * 90 * Math.PI) / 180);        //xoay theo huong
+        canvasContext.rotate(this.direction * Math.PI / 2);        //xoay theo huong
         canvasContext.drawImage(
             this.pacmanImages[this.pacmanImageIndex],
             -blockSize/2,
@@ -75,10 +75,10 @@ class Pacman {
     }
 
     moveCharacter() {
-        if (this.getBlockX() == -1 && this.getBlockY() == 10){
+        if (this.getBlockX1() == -1 && this.getBlockY1() == 10){
             this.x = 20 * blockSize;
         }
-        if (this.getBlockX() == 21 && this.getBlockY() == 10){
+        if (this.getBlockX1() == 21 && this.getBlockY1() == 10){
             this.x = 0 * blockSize;
         }
         this.checkChangeDirection();
@@ -137,7 +137,7 @@ class Pacman {
         let flag = -1;
         for (let i = 1; i <= ghosts.length; i++){
             if (!ghosts[i - 1].isDeath){
-                if (ghosts[i - 1].getBlockX() == this.getBlockX() && ghosts[i - 1].getBlockY() == this.getBlockY()){
+                if (ghosts[i - 1].getBlockX1() == this.getBlockX1() && ghosts[i - 1].getBlockY1() == this.getBlockY1()){
                     flag = i - 1;
                 }
             }
@@ -153,8 +153,7 @@ class Pacman {
             }
             else {
                 this.direction = this.nextDirection;
-                this.stopMoveForward(this.nextDirection);
-                
+                this.stopMoveForward(this.nextDirection);         
             }
         }
     }
@@ -173,11 +172,11 @@ class Pacman {
         }
     }
 
-    getBlockX() {
+    getBlockX1() {
         return Math.floor(this.x / blockSize);
     }
 
-    getBlockY() {
+    getBlockY1() {
         return Math.floor(this.y / blockSize);
     }
     getBlockX2() {
@@ -202,7 +201,7 @@ class Pacman {
         let column = Math.floor(this.x / blockSize + 0.5);
         if (tileMap.map[row][column] == 2){
             tileMap.map[row][column] = 3;
-            this.currentDot++;
+            currentDot++;
             score += 10;
         }
     }
@@ -223,7 +222,7 @@ class Pacman {
             this.ghostFlashTimer = setTimeout(() => {
                 this.makeGhostFlash = 1;
             }, 3000);
-            this.currentDot++;
+            currentDot++;
             score += 100;
         }
     }

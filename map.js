@@ -57,25 +57,31 @@ class Map {
         for (let i = 0; i < this.map.length; i++){
             for (let j = 0; j < this.map[0].length; j++){
                 if (this.map[i][j] == 1){
-                    createRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize, "#342DCA")
+                    canvasContext.fillStyle = "#342DCA";
+                    canvasContext.fillRect(j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);
                 }
                 if (j > 0 && this.map[i][j - 1] == 1){
-                    createRect(j * this.blockSize, i * this.blockSize + this.getWallThickness(), this.getWallSpace() + this.getWallThickness(), this.getWallSpace(), "black")
+                    canvasContext.fillStyle = "black";
+                    canvasContext.fillRect(j * this.blockSize, i * this.blockSize + this.getWallThickness(), this.getWallSpace() + this.getWallThickness(), this.getWallSpace());
                 }
                 if (j < this.map[0].length - 1 && this.map[i][j + 1] == 1){
-                    createRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize + this.getWallThickness(), this.getWallSpace() + this.getWallThickness(), this.getWallSpace(), "black")
+                    canvasContext.fillStyle = "black";
+                    canvasContext.fillRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize + this.getWallThickness(), this.getWallSpace() + this.getWallThickness(), this.getWallSpace());
                 }
                 if (i > 0 && this.map[i - 1][j] == 1){
-                    createRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize, this.getWallSpace(), this.getWallSpace() + this.getWallThickness(), "black")
+                    canvasContext.fillStyle = "black";
+                    canvasContext.fillRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize, this.getWallSpace(), this.getWallSpace() + this.getWallThickness());
                 }
                 if (i < this.map.length - 1 && this.map[i + 1][j] == 1){
-                    createRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize + this.getWallThickness(), this.getWallSpace(), this.getWallSpace() + this.getWallThickness(), "black")
+                    canvasContext.fillStyle = "black";
+                    canvasContext.fillRect(j * this.blockSize + this.getWallThickness(), i * this.blockSize + this.getWallThickness(), this.getWallSpace(), this.getWallSpace() + this.getWallThickness());
                 }
                 // if (this.map[i][j] == 2){
                 //     canvasContext.drawImage(this.yellowDot, j * this.blockSize, i * this.blockSize);
                 // }
                 if (this.map[i][j] == 2){
-                    createRect(j * blockSize + 2/5 * this.blockSize, i * blockSize + 2/5 * this.blockSize, blockSize / 5, blockSize / 5, '#FEB897')
+                    canvasContext.fillStyle = '#FEB897';
+                    canvasContext.fillRect(j * blockSize + 2/5 * this.blockSize, i * blockSize + 2/5 * this.blockSize, blockSize / 5, blockSize / 5);
                 }
                 if (this.map[i][j] == 4){
                     canvasContext.drawImage(this.pinkDot, j * this.blockSize, i * this.blockSize, this.blockSize, this.blockSize);

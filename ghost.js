@@ -59,10 +59,10 @@ class Ghost {
     }
 
     moveProcess() {
-        if (this.getBlockX() == -1 && this.getBlockY() == 10){
+        if (this.getBlockX1() == -1 && this.getBlockY1() == 10){
             this.x = 20 * blockSize;
         }
-        if (this.getBlockX() == 21 && this.getBlockY() == 10){
+        if (this.getBlockX1() == 21 && this.getBlockY1() == 10){
             this.x = 0;
         }
         this.checkChangeDirection();
@@ -167,17 +167,17 @@ class Ghost {
 
     isSameLine() {
         let flag = -1;      //false
-        if (this.getBlockX() == pacman.getBlockX() || this.getBlockX() == pacman.getBlockX2() || this.getBlockX2() == pacman.getBlockX() ||this.getBlockX2() == pacman.getBlockX2()){        //same col
-            for (let i = Math.min(this.getBlockY(), pacman.getBlockY()); i <= Math.max(pacman.getBlockY(), this.getBlockY()); i++){
-                if (tileMap.map[i][this.getBlockX()] == 1) {
+        if (this.getBlockX1() == pacman.getBlockX1() || this.getBlockX1() == pacman.getBlockX2() || this.getBlockX2() == pacman.getBlockX1() ||this.getBlockX2() == pacman.getBlockX2()){        //same col
+            for (let i = Math.min(this.getBlockY1(), pacman.getBlockY1()); i <= Math.max(pacman.getBlockY1(), this.getBlockY1()); i++){
+                if (tileMap.map[i][this.getBlockX1()] == 1) {
                     return -1;                  //false
                 }
                 else flag = 1;                  //true
             }
         }
-        else if (this.getBlockY() == pacman.getBlockY() || this.getBlockY2() == pacman.getBlockY() || this.getBlockY() == pacman.getBlockY2() || this.getBlockY2() == pacman.getBlockY2()){    //same row
-            for (let i = Math.min(this.getBlockX(), pacman.getBlockX()); i <= Math.max(pacman.getBlockX(), this.getBlockX()); i++){
-                if (tileMap.map[this.getBlockY()][i] == 1){
+        else if (this.getBlockY1() == pacman.getBlockY1() || this.getBlockY2() == pacman.getBlockY1() || this.getBlockY1() == pacman.getBlockY2() || this.getBlockY2() == pacman.getBlockY2()){    //same row
+            for (let i = Math.min(this.getBlockX1(), pacman.getBlockX1()); i <= Math.max(pacman.getBlockX1(), this.getBlockX1()); i++){
+                if (tileMap.map[this.getBlockY1()][i] == 1){
                     return -1;                  //false
                 }
                 else flag = 2;                  //true
@@ -187,7 +187,7 @@ class Ghost {
     }
     calculateWhenBeChased() {
         if (this.isSameLine() == 2){            //same row
-            if (this.getBlockY2() == pacman.getBlockY()){               // check if ghost turn down
+            if (this.getBlockY2() == pacman.getBlockY1()){               // check if ghost turn down
                 if (this.x > pacman.x){
                     this.direction = movingDirection.right;
                 }
@@ -198,7 +198,7 @@ class Ghost {
             }
         }
         else if (this.isSameLine() == 1){       //same col
-            if (this.getBlockX2() == pacman.getBlockX()){               // check if ghost turn right
+            if (this.getBlockX2() == pacman.getBlockX1()){               // check if ghost turn right
                 if (this.y > pacman.y){
                     this.direction = movingDirection.down;
                 }
@@ -210,20 +210,116 @@ class Ghost {
         }
     }
 
+    calculateHeuristic (node, pacmanX, pacmanY) {
+        return this.getDistance(pacmanX, pacmanY, node.x, node.y);
+        // const distance =  Math.abs(pacmanX - node.x) + Math.abs(pacmanY - node.y);
+        // return distance
+    }
+
+    getNeighbors (node, map) {
+        let neighborList = [];
+        if (node.x + 1 < map[0].length && node.x + 1 >= 0 && map[node.y][node.x + 1] != 1) {
+            let newMoves = node.moves.slice();
+            newMoves.push(movingDirection.right);
+            const newNode = new Node(node.x + 1, node.y, 0, 0);
+            newNode.moves = newMoves.slice();
+            neighborList.push(newNode);
+        }
+        if (node.x >= 1 && node.x - 1 < map[0].length && map[node.y][node.x - 1] != 1) {
+            let newMoves = node.moves.slice();
+            newMoves.push(movingDirection.left);
+            const newNode = new Node(node.x - 1, node.y, 0, 0);
+            newNode.moves = newMoves.slice();
+            neighborList.push(newNode);
+        }
+        if (node.y >= 1 && node.y - 1 < map.length && map[node.y - 1][node.x] != 1) {
+            // console.log('up')
+            let newMoves = node.moves.slice();
+            newMoves.push(movingDirection.up);
+            const newNode = new Node(node.x, node.y - 1, 0, 0);
+            newNode.moves = newMoves.slice();
+            neighborList.push(newNode);
+        }
+        if (node.y + 1 < map.length && node.y + 1 >= 0 && map[node.y + 1][node.x] != 1) {
+            let newMoves = node.moves.slice();
+            newMoves.push(movingDirection.down);
+            const newNode = new Node(node.x, node.y + 1, 0, 0);
+            newNode.moves = newMoves.slice();
+            neighborList.push(newNode);
+        }
+        return neighborList;
+    }
+
+    aStar(map, ghostX, ghostY, pacmanX, pacmanY) {
+        let tempMap = [];
+        for (let i = 0; i < map.length; i++){
+            tempMap[i] = map[i].slice();
+        }
+        const openSet = [];
+        const closedSet = [];
+        const startNode = new Node(ghostX, ghostY);
+        startNode.h = this.calculateHeuristic(startNode, pacman.getBlockX1(), pacman.getBlockY1());
+        startNode.g = 0;
+        openSet.push(startNode);
+        while(openSet.length > 0) {
+            openSet.sort((a, b) => a.aGrade - b.aGrade);
+            const curNode = openSet.shift();
+            if (curNode.x == pacmanX && curNode.y == pacmanY) {
+                // console.log(curNode.moves);
+                return curNode.moves[0];
+            }
+            tempMap[curNode.y][curNode.x] = 1;
+            closedSet.push(curNode);
+            const neighborList = this.getNeighbors(curNode, tempMap);
+            for (let neighbor of neighborList) {
+                if (!closedSet.find((node) => {
+                    return node.x == neighbor.x && node.y == neighbor.y
+                })) {
+                    const gScore = curNode.g + 1;
+                    const hScore = this.calculateHeuristic(neighbor, pacman.getBlockX1(), pacman.getBlockY1());
+                    const aGrade = gScore + hScore;
+                    const existNode = openSet.find((node) => { return node.x == neighbor.x && node.y == neighbor.y});
+                    if (existNode) {
+                        if (aGrade < neighbor.aGrade) {
+                            existNode.g = gScore;
+                            existNode.h = hScore;
+                            existNode.moves = neighbor.moves.slice();
+                        }
+                    }
+                    else {
+                        neighbor.g = gScore;
+                        neighbor.h = hScore;
+                        openSet.push(neighbor);
+                    }
+                }
+            }
+        }
+    }
 
     update() {
         if (this.isStart == 1) {
             this.direction = movingDirection.up;
             this.nextDirection = movingDirection.up;
-            if (this.getBlockX() < 9 || this.getBlockX() > 11 || this.getBlockY() < 10 || this.getBlockY() > 11){               // ra ngoai
+            if (this.getBlockX1() < 9 || this.getBlockX1() > 11 || this.getBlockY1() < 10 || this.getBlockY1() > 11){               // ra ngoai
                 this.isStart = 0;
             }
         }
         else {
             if (pacman.isPower){
                 this.calculateWhenBeChased();
+                this.randomChangeDirection();
             }
-            this.randomChangeDirection();
+            else {
+                if (this.getBlockDistance() <= this.range){
+                    let temp = this.aStar(tileMap.map, this.getBlockX1(), this.getBlockY1(), pacman.getBlockX1(), pacman.getBlockY1());
+                    if (typeof temp != "undefined") {
+                        this.nextDirection = temp;
+                        // console.log('direction',this.direction)
+                        // console.log('next direction',this.nextDirection)
+                    }
+                }
+                else this.randomChangeDirection();
+            }
         }
         this.moveProcess();
     }
@@ -232,11 +328,11 @@ class Ghost {
         return Math.sqrt(Math.pow(pacmanX - ghostX, 2) + Math.pow(pacmanY - ghostY, 2));
     }
 
-    getBlockX() {
+    getBlockX1() {
         return Math.floor(this.x / blockSize);
     }
 
-    getBlockY() {
+    getBlockY1() {
         return Math.floor(this.y / blockSize);
     }
 
@@ -247,7 +343,7 @@ class Ghost {
         return Math.floor((this.y + blockSize - 1) / blockSize);
     }
     getBlockDistance() {
-        return Math.sqrt(Math.pow(pacman.getBlockX() - this.getBlockX(), 2) + Math.pow(pacman.getBlockY() - this.getBlockY(), 2));
+        return Math.sqrt(Math.pow(pacman.getBlockX1() - this.getBlockX1(), 2) + Math.pow(pacman.getBlockY1() - this.getBlockY1(), 2));
     }
     
 } 

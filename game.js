@@ -10,17 +10,12 @@ const movingDirection = {
     down: 1,
 }
 
+let currentDot = 0;
 let ghosts = [];
 let score = 0;
 let lives = 3;
 let tileMap = new Map(blockSize);
 let pacman = new Pacman(blockSize, blockSize, blockSize, blockSize, blockSize / 6);     //blockSize % speed = 0 if you don't want to see some bug
-
-
-function createRect(x, y, width, height, color) {
-    canvasContext.fillStyle = color;
-    canvasContext.fillRect(x, y, width, height);
-}
 
 function drawScore() {
     canvasContext.font = '20px Emulogic'
@@ -43,7 +38,7 @@ function restartGame() {
 function createGhost() {
     ghosts = [];
     for (let i = 1; i <= 4; i++){
-        let newGhost = new Ghost(10 * blockSize,11 * blockSize, blockSize, blockSize, 3, 0, i);
+        let newGhost = new Ghost(10 * blockSize,11 * blockSize, blockSize, blockSize, 3, 5, i);
         ghosts.push(newGhost);
     }
 }
@@ -66,26 +61,25 @@ function updateGhosts() {
 }
 
 
-function drawGameOver() {
+function processLose() {
     canvasContext.font = "30px Emulogic";
     canvasContext.fillStyle = 'white';
     canvasContext.fillText('GAME OVER!', 175, 225)
     clearInterval(gameInterval)
 }
 
-function drawWinGame() {
+function processWin() {
     canvasContext.font = "30px Emulogic";
     canvasContext.fillStyle = 'white';
     canvasContext.fillText('YOU WIN!', 175, 225)
     clearInterval(gameInterval)
 }
-
-function drawEndGame() {
-    if (pacman.currentDot == tileMap.allDot){
-        drawWinGame();
+function drawEnd() {
+    if (currentDot == tileMap.allDot){
+        processWin();
     }
     if (lives == 0){
-        drawGameOver();
+        processLose();
     }
 }
 
@@ -103,13 +97,14 @@ function update() {
 }
 
 function draw() {
-    createRect(0, 0, canvas.width, canvas.height, "black")
+    canvasContext.fillStyle = "black";
+    canvasContext.fillRect(0, 0, canvas.width, canvas.height);
     tileMap.drawWall();
     drawScore();
     pacman.draw();
     drawGhosts();
     drawLive();
-    drawEndGame();
+    drawEnd();
 }
 
 tileMap.getAllDot()
