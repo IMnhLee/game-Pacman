@@ -167,7 +167,10 @@ class Ghost {
 
     isSameLine() {
         let flag = -1;      //false
-        if (this.getBlockX1() == pacman.getBlockX1() || this.getBlockX1() == pacman.getBlockX2() || this.getBlockX2() == pacman.getBlockX1() ||this.getBlockX2() == pacman.getBlockX2()){        //same col
+        if (this.getBlockX1() == pacman.getBlockX1() ||
+            this.getBlockX1() == pacman.getBlockX2() ||
+            this.getBlockX2() == pacman.getBlockX1() ||
+            this.getBlockX2() == pacman.getBlockX2()){        //same col
             for (let i = Math.min(this.getBlockY1(), pacman.getBlockY1()); i <= Math.max(pacman.getBlockY1(), this.getBlockY1()); i++){
                 if (tileMap.map[i][this.getBlockX1()] == 1) {
                     return -1;                  //false
@@ -175,7 +178,10 @@ class Ghost {
                 else flag = 1;                  //true
             }
         }
-        else if (this.getBlockY1() == pacman.getBlockY1() || this.getBlockY2() == pacman.getBlockY1() || this.getBlockY1() == pacman.getBlockY2() || this.getBlockY2() == pacman.getBlockY2()){    //same row
+        if (this.getBlockY1() == pacman.getBlockY1() ||
+            this.getBlockY2() == pacman.getBlockY1() ||
+            this.getBlockY1() == pacman.getBlockY2() ||
+            this.getBlockY2() == pacman.getBlockY2()){        //same row
             for (let i = Math.min(this.getBlockX1(), pacman.getBlockX1()); i <= Math.max(pacman.getBlockX1(), this.getBlockX1()); i++){
                 if (tileMap.map[this.getBlockY1()][i] == 1){
                     return -1;                  //false
@@ -186,27 +192,35 @@ class Ghost {
         return flag;
     }
     calculateWhenBeChased() {
-        if (this.isSameLine() == 2){            //same row
+        let isSame = this.isSameLine()
+        if (isSame == 2){            //same row
             if (this.getBlockY2() == pacman.getBlockY1()){               // check if ghost turn down
                 if (this.x > pacman.x){
                     this.direction = movingDirection.right;
+                    // this.nextDirection = movingDirection.right;
                 }
                 else {
                     this.direction = movingDirection.left
+                    // this.nextDirection = movingDirection.left;
                 }
                 this.changeDirectionWhenBeChased(this.direction);
             }
         }
-        else if (this.isSameLine() == 1){       //same col
+        else if (isSame == 1){       //same col
             if (this.getBlockX2() == pacman.getBlockX1()){               // check if ghost turn right
                 if (this.y > pacman.y){
                     this.direction = movingDirection.down;
+                    // this.nextDirection = movingDirection.down;
                 }
                 else {
                     this.direction = movingDirection.up
+                    // this.nextDirection = movingDirection.up;
                 }
                 this.changeDirectionWhenBeChased(this.direction);
             }
+        }
+        else {
+            this.randomChangeDirection();
         }
     }
 
@@ -268,7 +282,6 @@ class Ghost {
                 // console.log(curNode.moves);
                 return curNode.moves[0];
             }
-            tempMap[curNode.y][curNode.x] = 1;
             closedSet.push(curNode);
             const neighborList = this.getNeighbors(curNode, tempMap);
             for (let neighbor of neighborList) {
@@ -307,7 +320,6 @@ class Ghost {
         else {
             if (pacman.isPower){
                 this.calculateWhenBeChased();
-                this.randomChangeDirection();
             }
             else {
                 if (this.getBlockDistance() <= this.range){
