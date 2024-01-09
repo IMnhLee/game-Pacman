@@ -10,12 +10,14 @@ const movingDirection = {
     down: 1,
 }
 
-let currentDot = 0;
-let ghosts = [];
-let score = 0;
-let lives = 3;
-let tileMap = new Map(blockSize);
-let pacman = new Pacman(blockSize, blockSize, blockSize, blockSize, blockSize / 6);     //blockSize % speed = 0 if you don't want to see some bug
+let isEventListenerAdded = false;
+let currentDot;
+let ghosts;
+let score;
+let lives;
+let tileMap;
+let pacman;
+let gameInterval;
 
 function drawScore() {
     canvasContext.font = '20px Emulogic'
@@ -79,29 +81,51 @@ function processWin() {
     canvasContext.fillText('Click everywhere to restart!', 115, 325);
 }
 function drawEnd() {
-    if (currentDot == tileMap.allDot){
-        processWin();
-        document.addEventListener('click', () => newGame());
+    console.log(currentDot)
+    if (!isEventListenerAdded) {
+        if (currentDot == tileMap.allDot){
+            processWin();
+            // document.removeEventListener('click', handleNewGame);
+            document.addEventListener('click', handleNewGame);
+            isEventListenerAdded = true;
+        }
+        if (lives == 0){
+            processLose();
+            // document.removeEventListener('click', handleNewGame);
+            document.addEventListener('click', handleNewGame);
+            isEventListenerAdded = true;
+        }
     }
-    if (lives == 0){
-        processLose();
-        document.addEventListener('click', () => newGame());
-    }
+}
+
+function handleNewGame() {
+    document.removeEventListener('click', handleNewGame);
+    isEventListenerAdded = false;
+    newGame();
 }
 
 function newGame() {
     currentDot = 0;
     score = 0;
     lives = 3;
-    gameInterval = setInterval(gameLoop, 1000/30);
+    ghosts = [];
+    tileMap = new Map(blockSize);
+    pacman = new Pacman(blockSize, blockSize, blockSize, blockSize, blockSize / 6);         // blockSize % speed == 0. if no there will have some bug
+    tileMap.getAllDot()
+    console.log(tileMap.allDot);
+    createGhost();
+    gameInterval = setInterval(gameLoop, 1000/30);          //fps = 30
 }
 
 function becomeHardMode() {
-    if (currentDot >= 120 && ghosts[0] != 8) {
-        let k = 8;
-        for (let i = 0; i < ghosts.length; i++) {
-            ghosts[i].range = 8;
-        }
+    if (currentDot >= 120 && ghosts[0] != 6) {
+        // for (let i = 0; i < ghosts.length; i++) {
+        //     ghosts[i].range = 8;
+        // }
+        ghosts[0].range = 6;
+        ghosts[1].range = 8;
+        ghosts[2].range = 10;
+        ghosts[3].range = 12;
     }
 }
 
@@ -130,6 +154,4 @@ function draw() {
     drawEnd();
 }
 
-tileMap.getAllDot()
-createGhost();
-let gameInterval = setInterval(gameLoop, 1000/30);      //fps = 30
+newGame();

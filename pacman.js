@@ -137,9 +137,21 @@ class Pacman {
         let flag = -1;
         for (let i = 1; i <= ghosts.length; i++){
             if (!ghosts[i - 1].isDeath){
-                if (ghosts[i - 1].getBlockX1() == this.getBlockX1() && ghosts[i - 1].getBlockY1() == this.getBlockY1()){
-                    flag = i - 1;
-                }
+                // if ((ghosts[i - 1].getBlockX2() == this.getBlockX1() ||
+                //     ghosts[i - 1].getBlockX1() == this.getBlockX2())
+                //     // ghosts[i - 1].getBlockX1() == this.getBlockX1() ||
+                //     // ghosts[i - 1].getBlockX2() == this.getBlockX2() ||
+                //     &&
+                //     (ghosts[i - 1].getBlockY1() == this.getBlockY2() ||
+                //     ghosts[i - 1].getBlockY2() == this.getBlockY1())){
+                //     flag = i - 1;
+                // }
+                if ((Math.floor(this.x / blockSize + 0.5) == Math.ceil(ghosts[i - 1].x / blockSize - 0.5) ||
+                    Math.ceil(this.x / blockSize - 0.5) == Math.floor(ghosts[i - 1].x / blockSize + 0.5)) &&
+                    (Math.floor(this.y / blockSize + 0.5) == Math.ceil(ghosts[i - 1].y / blockSize - 0.5) ||
+                    Math.ceil(this.y / blockSize - 0.5) == Math.floor(ghosts[i - 1].y / blockSize + 0.5))){
+                        flag = i - 1;
+                    }
             }
         }
         return flag;
@@ -221,7 +233,7 @@ class Pacman {
             }, 10000);
             this.ghostFlashTimer = setTimeout(() => {
                 this.makeGhostFlash = 1;
-            }, 3000);
+            }, 7000);
             currentDot++;
             score += 100;
         }

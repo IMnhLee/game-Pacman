@@ -30,7 +30,7 @@ class Ghost {
     setImageWhenScared() {
         if (pacman.makeGhostFlash) {
           this.changeScareTimer--;
-          if (this.changeScareTimer === 0) {
+          if (this.changeScareTimer == 0) {
             this.ghostImage = this.ghostImage === this.scaredGhost ? this.scaredGhost2 : this.scaredGhost
             this.changeScareTimer = this.changeScareTimerDefault;
           }
@@ -167,10 +167,10 @@ class Ghost {
 
     isSameLine() {
         let flag = -1;      //false
-        if (this.getBlockX1() == pacman.getBlockX1() ||
-            this.getBlockX1() == pacman.getBlockX2() ||
-            this.getBlockX2() == pacman.getBlockX1() ||
-            this.getBlockX2() == pacman.getBlockX2()){        //same col
+        if (this.getBlockX1() == pacman.getBlockX2() ||
+            // this.getBlockX1() == pacman.getBlockX1() ||
+            // this.getBlockX2() == pacman.getBlockX2() ||
+            this.getBlockX2() == pacman.getBlockX1()){        //same col
             for (let i = Math.min(this.getBlockY1(), pacman.getBlockY1()); i <= Math.max(pacman.getBlockY1(), this.getBlockY1()); i++){
                 if (tileMap.map[i][this.getBlockX1()] == 1) {
                     return -1;                  //false
@@ -178,10 +178,10 @@ class Ghost {
                 else flag = 1;                  //true
             }
         }
-        if (this.getBlockY1() == pacman.getBlockY1() ||
-            this.getBlockY2() == pacman.getBlockY1() ||
-            this.getBlockY1() == pacman.getBlockY2() ||
-            this.getBlockY2() == pacman.getBlockY2()){        //same row
+        if (this.getBlockY1() == pacman.getBlockY2() ||
+            // this.getBlockY2() == pacman.getBlockY2() ||
+            // this.getBlockY1() == pacman.getBlockY1() ||
+            this.getBlockY2() == pacman.getBlockY1()){        //same row
             for (let i = Math.min(this.getBlockX1(), pacman.getBlockX1()); i <= Math.max(pacman.getBlockX1(), this.getBlockX1()); i++){
                 if (tileMap.map[this.getBlockY1()][i] == 1){
                     return -1;                  //false
