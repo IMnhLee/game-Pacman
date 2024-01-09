@@ -62,24 +62,46 @@ function updateGhosts() {
 
 
 function processLose() {
+    clearInterval(gameInterval)
     canvasContext.font = "30px Emulogic";
     canvasContext.fillStyle = 'white';
     canvasContext.fillText('GAME OVER!', 175, 225)
-    clearInterval(gameInterval)
+    canvasContext.font = "15px Emulogic";
+    canvasContext.fillText('Click everywhere to restart!', 115, 325);
 }
 
 function processWin() {
+    clearInterval(gameInterval)
     canvasContext.font = "30px Emulogic";
     canvasContext.fillStyle = 'white';
     canvasContext.fillText('YOU WIN!', 175, 225)
-    clearInterval(gameInterval)
+    canvasContext.font = "15px Emulogic";
+    canvasContext.fillText('Click everywhere to restart!', 115, 325);
 }
 function drawEnd() {
     if (currentDot == tileMap.allDot){
         processWin();
+        document.addEventListener('click', () => newGame());
     }
     if (lives == 0){
         processLose();
+        document.addEventListener('click', () => newGame());
+    }
+}
+
+function newGame() {
+    currentDot = 0;
+    score = 0;
+    lives = 3;
+    gameInterval = setInterval(gameLoop, 1000/30);
+}
+
+function becomeHardMode() {
+    if (currentDot >= 120 && ghosts[0] != 8) {
+        let k = 8;
+        for (let i = 0; i < ghosts.length; i++) {
+            ghosts[i].range = 8;
+        }
     }
 }
 
@@ -89,6 +111,7 @@ function gameLoop() {
 }
 
 function update() {
+    becomeHardMode();
     pacman.eatCharacter();
     pacman.moveCharacter();
     pacman.eatDot();
