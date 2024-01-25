@@ -85,13 +85,11 @@ function drawEnd() {
     if (!isEventListenerAdded) {
         if (currentDot == tileMap.allDot){
             processWin();
-            // document.removeEventListener('click', handleNewGame);
             document.addEventListener('click', handleNewGame);
             isEventListenerAdded = true;
         }
         if (lives == 0){
             processLose();
-            // document.removeEventListener('click', handleNewGame);
             document.addEventListener('click', handleNewGame);
             isEventListenerAdded = true;
         }
