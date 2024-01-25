@@ -171,9 +171,6 @@ class Pacman {
     }
 
     animate() {
-        // if (this.currentAnimation == null) {
-        //     return;
-        // }
         this.currentAnimation--;
         if (this.currentAnimation == 0){
             this.currentAnimation = this.animationDefault;

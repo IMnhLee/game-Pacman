@@ -176,8 +176,6 @@ class Ghost {
     isSameLine() {
         let flag = -1;      //false
         if (this.getBlockX1() == pacman.getBlockX2() ||
-            // this.getBlockX1() == pacman.getBlockX1() ||
-            // this.getBlockX2() == pacman.getBlockX2() ||
             this.getBlockX2() == pacman.getBlockX1()){        //same col
             for (let i = Math.min(this.getBlockY1(), pacman.getBlockY1()); i <= Math.max(pacman.getBlockY1(), this.getBlockY1()); i++){
                 if (tileMap.map[i][this.getBlockX1()] == 1) {
@@ -187,8 +185,6 @@ class Ghost {
             }
         }
         if (this.getBlockY1() == pacman.getBlockY2() ||
-            // this.getBlockY2() == pacman.getBlockY2() ||
-            // this.getBlockY1() == pacman.getBlockY1() ||
             this.getBlockY2() == pacman.getBlockY1()){        //same row
             for (let i = Math.min(this.getBlockX1(), pacman.getBlockX1()); i <= Math.max(pacman.getBlockX1(), this.getBlockX1()); i++){
                 if (tileMap.map[this.getBlockY1()][i] == 1){
@@ -205,11 +201,9 @@ class Ghost {
             if (this.getBlockY2() == pacman.getBlockY1()){               // check if ghost turn down
                 if (this.x > pacman.x){
                     this.direction = movingDirection.right;
-                    // this.nextDirection = movingDirection.right;
                 }
                 else {
                     this.direction = movingDirection.left
-                    // this.nextDirection = movingDirection.left;
                 }
                 this.changeDirectionWhenBeChased(this.direction);
             }
@@ -218,11 +212,9 @@ class Ghost {
             if (this.getBlockX2() == pacman.getBlockX1()){               // check if ghost turn right
                 if (this.y > pacman.y){
                     this.direction = movingDirection.down;
-                    // this.nextDirection = movingDirection.down;
                 }
                 else {
                     this.direction = movingDirection.up
-                    // this.nextDirection = movingDirection.up;
                 }
                 this.changeDirectionWhenBeChased(this.direction);
             }
@@ -234,8 +226,6 @@ class Ghost {
 
     calculateHeuristic (node, pacmanX, pacmanY) {
         return this.getDistance(pacmanX, pacmanY, node.x, node.y);
-        // const distance =  Math.abs(pacmanX - node.x) + Math.abs(pacmanY - node.y);
-        // return distance
     }
 
     getNeighbors (node, map) {
