@@ -13,7 +13,7 @@ A classic PacMan arcade game implementation using HTML Canvas and JavaScript. Th
 
 ## How to Run
 1. Clone the repository or download the project files.
-2. Open `pacman.html` in a web browser to start the game.
+2. Open `index.html` in a web browser to start the game.
 
 ## Controls
 - **Arrow Keys**: Move PacMan (Up, Down, Left, Right)
